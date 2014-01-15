@@ -79,6 +79,8 @@ typedef enum
  * to communicate events.
  * In the not-so-far future...
  */
+typedef int (*handle_onload_func_t)(void* data, fluid_player_t* player);
+
 typedef int (*handle_midi_event_func_t)(void* data, fluid_midi_event_t* event);
 
 FLUIDSYNTH_API fluid_midi_router_t* new_fluid_midi_router(fluid_settings_t* settings,

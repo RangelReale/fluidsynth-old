@@ -37,6 +37,7 @@
 #endif
 
 #include "fluidsynth.h"
+#include "fluid_midi.h"
 
 #if defined(WIN32) && !defined(MINGW32)
 #include "config_win32.h"
@@ -273,6 +274,20 @@ void handle_signal(int sig_num)
 }
 #endif
 
+int event_callback(void *data, fluid_midi_event_t *event) {
+	fluid_synth_t* synth = (fluid_synth_t*) data;
+	int type = fluid_midi_event_get_type(event);
+	int chan = fluid_midi_event_get_channel(event);
+	switch(type) {
+		case MIDI_TEXT:
+			printf("Callback: Playing text event %s (length %d)\n", event->paramptr, event->param1);
+			return FLUID_OK;
+		case MIDI_LYRIC:
+			printf("Callback: Playing lyric event %d %s\n", event->param1, event->paramptr);
+			return FLUID_OK;
+	}
+	return fluid_synth_handle_midi_event( data, event);
+}
 
 /*
  * main
@@ -704,7 +719,7 @@ int main(int argc, char** argv)
 	  break;
 	}
       }
-
+	  fluid_player_set_playback_callback(player, event_callback, synth);
       fluid_player_add(player, argv[i]);
     }
   }
