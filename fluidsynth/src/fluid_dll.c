@@ -73,6 +73,9 @@ void fluid_set_hinstance(void* hinstance)
  */
 void* fluid_get_hinstance(void)
 {
+  if (!fluid_hinstance)
+	  fluid_hinstance = GetModuleHandle(NULL);
+
   return (void*) fluid_hinstance;
 }
 
@@ -127,6 +130,9 @@ void fluid_win32_destroy_window(void)
 
 HWND fluid_win32_get_window(void)
 {
+  if (!fluid_wnd)
+    fluid_win32_create_window();
+
   return fluid_wnd;
 }
 

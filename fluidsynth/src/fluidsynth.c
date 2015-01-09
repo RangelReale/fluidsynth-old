@@ -66,6 +66,7 @@ static fluid_cmd_handler_t* newclient(void* data, char* addr);
  */
 fluid_cmd_handler_t* cmd_handler = NULL;
 int option_help = 0;		/* set to 1 if "-o help" is specified */
+int verbose = FALSE;
 
 /*
  * support for the getopt function
@@ -276,15 +277,18 @@ void handle_signal(int sig_num)
 
 int event_callback(void *data, fluid_midi_event_t *event) {
 	fluid_synth_t* synth = (fluid_synth_t*) data;
-	int type = fluid_midi_event_get_type(event);
-	int chan = fluid_midi_event_get_channel(event);
-	switch(type) {
-		case MIDI_TEXT:
-			printf("Callback: Playing text event %s (length %d)\n", event->paramptr, event->param1);
-			return FLUID_OK;
-		case MIDI_LYRIC:
-			printf("Callback: Playing lyric event %d %s\n", event->param1, event->paramptr);
-			return FLUID_OK;
+	if (verbose)
+	{
+		int type = fluid_midi_event_get_type(event);
+		int chan = fluid_midi_event_get_channel(event);
+		switch(type) {
+			case MIDI_TEXT:
+				printf("Callback: Playing text event '%s' (length %d)\n", event->paramptr, event->param1);
+				return FLUID_OK;
+			case MIDI_LYRIC:
+				printf("Callback: Playing lyric event %d '%s'\n", event->param1, event->paramptr);
+				return FLUID_OK;
+		}
 	}
 	return fluid_synth_handle_midi_event( data, event);
 }
@@ -556,6 +560,7 @@ int main(int argc, char** argv)
       break;
     case 'v':
       fluid_settings_setint(settings, "synth.verbose", TRUE);
+	  verbose = TRUE;
       break;
     case 'z':
       fluid_settings_setint(settings, "audio.period-size", atoi(optarg));
