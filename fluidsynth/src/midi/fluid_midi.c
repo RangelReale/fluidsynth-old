@@ -1063,6 +1063,18 @@ fluid_midi_event_set_sysex(fluid_midi_event_t *evt, void *data, int size, int dy
     return FLUID_OK;
 }
 
+char *
+fluid_midi_event_get_text(fluid_midi_event_t* evt)
+{
+	return (char*)evt->paramptr;
+}
+
+int 
+fluid_midi_event_get_text_length(fluid_midi_event_t* evt)
+{
+	return evt->param1;
+}
+
 /**
  * Assign text/lyric data to a MIDI event structure.
  * @param evt MIDI event structure
@@ -1088,6 +1100,7 @@ fluid_midi_event_set_text(fluid_midi_event_t *evt, int type, void *data, int siz
     evt->param2 = dynamic;
     return FLUID_OK;
 }
+
 /******************************************************
  *
  *     fluid_track_t

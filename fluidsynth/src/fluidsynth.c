@@ -277,7 +277,7 @@ void handle_signal(int sig_num)
 
 int event_callback(void *data, fluid_midi_event_t *event) {
 	fluid_synth_t* synth = (fluid_synth_t*) data;
-	if (verbose)
+	if (!verbose)
 	{
 		int type = fluid_midi_event_get_type(event);
 		int chan = fluid_midi_event_get_channel(event);

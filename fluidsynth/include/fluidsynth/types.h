@@ -45,6 +45,7 @@ typedef struct _fluid_mod_t fluid_mod_t;                        /**< SoundFont m
 typedef struct _fluid_audio_driver_t fluid_audio_driver_t;      /**< Audio driver instance */
 typedef struct _fluid_file_renderer_t fluid_file_renderer_t;    /**< Audio file renderer instance */
 typedef struct _fluid_player_t fluid_player_t;                  /**< MIDI player instance */
+typedef struct _fluid_track_t fluid_track_t;					/**< MIDI player track instance */
 typedef struct _fluid_midi_event_t fluid_midi_event_t;          /**< MIDI event */
 typedef struct _fluid_midi_driver_t fluid_midi_driver_t;        /**< MIDI driver instance */
 typedef struct _fluid_midi_router_t fluid_midi_router_t;        /**< MIDI router instance */
