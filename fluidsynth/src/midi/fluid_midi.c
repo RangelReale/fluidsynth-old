@@ -898,6 +898,30 @@ fluid_midi_event_set_channel(fluid_midi_event_t *evt, int chan)
 }
 
 /**
+ * Get the dtime field of a MIDI event structure.
+ * @param evt MIDI event structure
+ * @return Dtime field
+ */
+unsigned int
+fluid_midi_event_get_dtime(fluid_midi_event_t *evt)
+{
+	return evt->dtime;
+}
+
+/**
+ * Set the dtime field of a MIDI event structure.
+ * @param evt MIDI event structure
+ * @param chan MIDI dtime field
+ * @return Always returns #FLUID_OK
+ */
+int
+fluid_midi_event_set_dtime(fluid_midi_event_t *evt, unsigned int dtime)
+{
+	evt->dtime = dtime;
+    return FLUID_OK;
+}
+
+/**
  * Get the key field of a MIDI event structure.
  * @param evt MIDI event structure
  * @return MIDI note number (0-127)

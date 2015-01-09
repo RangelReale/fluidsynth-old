@@ -207,6 +207,8 @@ FLUIDSYNTH_API int fluid_midi_event_set_type(fluid_midi_event_t* evt, int type);
 FLUIDSYNTH_API int fluid_midi_event_get_type(fluid_midi_event_t* evt);
 FLUIDSYNTH_API int fluid_midi_event_set_channel(fluid_midi_event_t* evt, int chan);
 FLUIDSYNTH_API int fluid_midi_event_get_channel(fluid_midi_event_t* evt);
+FLUIDSYNTH_API int fluid_midi_event_set_dtime(fluid_midi_event_t* evt, unsigned int dtime);
+FLUIDSYNTH_API unsigned int fluid_midi_event_get_dtime(fluid_midi_event_t* evt);
 FLUIDSYNTH_API int fluid_midi_event_get_key(fluid_midi_event_t* evt);
 FLUIDSYNTH_API int fluid_midi_event_set_key(fluid_midi_event_t* evt, int key);
 FLUIDSYNTH_API int fluid_midi_event_get_velocity(fluid_midi_event_t* evt);
