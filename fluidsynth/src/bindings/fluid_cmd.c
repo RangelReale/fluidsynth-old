@@ -695,9 +695,14 @@ fluid_handle_fonts(fluid_synth_t* synth, int ac, char** av, fluid_ostream_t out)
 
   for (i = 0; i < num; i++) {
     sfont = fluid_synth_get_sfont(synth, i);
-    fluid_ostream_printf(out, "%2d  %s\n",
-			fluid_sfont_get_id(sfont),
-			fluid_sfont_get_name(sfont));
+    if (sfont) {
+      fluid_ostream_printf(out, "%2d  %s\n",
+                       fluid_sfont_get_id(sfont),
+                       fluid_sfont_get_name(sfont));
+    }
+    else {
+      fluid_ostream_printf(out, "sfont is \"NULL\" for index %d\n", i);
+    }
   }
 
   return 0;
@@ -1803,7 +1808,7 @@ struct _fluid_server_t {
   fluid_mutex_t mutex;
 };
 
-static void fluid_server_handle_connection(fluid_server_t* server,
+static int fluid_server_handle_connection(fluid_server_t* server,
 					  fluid_socket_t client_socket,
 					  char* addr);
 static void fluid_server_close(fluid_server_t* server);
@@ -1896,7 +1901,7 @@ static void fluid_server_close(fluid_server_t* server)
   }
 }
 
-static void
+static int
 fluid_server_handle_connection(fluid_server_t* server, fluid_socket_t client_socket, char* addr)
 {
   fluid_client_t* client;
@@ -1904,14 +1909,16 @@ fluid_server_handle_connection(fluid_server_t* server, fluid_socket_t client_soc
 
   handler = server->newclient(server->data, addr);
   if (handler == NULL) {
-    return;
+    return -1;
   }
 
   client = new_fluid_client(server, server->settings, handler, client_socket);
   if (client == NULL) {
-    return;
+    return -1;
   }
   fluid_server_add_client(server, client);
+
+  return 0;
 }
 
 void fluid_server_add_client(fluid_server_t* server, fluid_client_t* client)
