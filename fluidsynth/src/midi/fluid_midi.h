@@ -64,6 +64,16 @@ struct _fluid_midi_event_t {
   unsigned char channel;    /* MIDI channel */
 };
 
+/*
+* fluid_midi_timed_event_t
+*/
+struct _fluid_midi_timed_event_t {
+	unsigned int ticks;
+	fluid_player_t *player;
+	fluid_track_t *track;
+	fluid_midi_event_t* event; /* Link to the event */
+};
+
 
 /*
  * fluid_track_t
@@ -129,7 +139,10 @@ struct _fluid_player_t {
 
   handle_midi_event_func_t playback_callback; /* function fired on each midi event as it is played */
   void* playback_userdata; /* pointer to user-defined data passed to playback_callback function */
-  
+
+  handle_midi_timed_event_func_t timedplayback_callback; /* function fired on each timed midi event as it is played */
+  void* timedplayback_userdata; /* pointer to user-defined timed data passed to timedplayback_callback function */
+
   handle_onload_func_t onload_callback; /* function fired when new MIDI data is loaded, such as a new file */
   void* onload_userdata; /* pointer to user-defined data passed to onload_callback function */
 };

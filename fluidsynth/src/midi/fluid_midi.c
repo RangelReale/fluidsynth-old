@@ -1125,6 +1125,36 @@ fluid_midi_event_set_text(fluid_midi_event_t *evt, int type, void *data, int siz
     return FLUID_OK;
 }
 
+
+/******************************************************
+ *
+ *     fluid_midi_timed_event_t
+ */
+
+unsigned int 
+fluid_midi_timed_event_get_ticks(fluid_midi_timed_event_t* evt)
+{
+	return evt->ticks;
+}
+
+fluid_player_t* 
+fluid_midi_timed_event_get_player(fluid_midi_timed_event_t* evt)
+{
+	return evt->player;
+}
+
+fluid_track_t* 
+fluid_midi_timed_event_get_track(fluid_midi_timed_event_t* evt)
+{
+	return evt->track;
+}
+
+fluid_midi_event_t* 
+fluid_midi_timed_event_get_event(fluid_midi_timed_event_t* evt)
+{
+	return evt->event;
+}
+
 /******************************************************
  *
  *     fluid_track_t
@@ -1164,6 +1194,15 @@ delete_fluid_track(fluid_track_t *track)
     }
     FLUID_FREE(track);
     return FLUID_OK;
+}
+
+/*
+ * fluid_track_get_num
+ */
+int
+fluid_track_get_num(fluid_track_t *track)
+{
+    return track->num;
 }
 
 /*
@@ -1320,6 +1359,16 @@ fluid_track_send_events(fluid_track_t *track,
         else {
             if (player->playback_callback)
                 player->playback_callback(player->playback_userdata, event);
+
+			if (player->timedplayback_callback) {
+				fluid_midi_timed_event_t tevent;
+				tevent.ticks = ticks;
+				tevent.player = player;
+				tevent.track = track;
+				tevent.event = event;
+				player->timedplayback_callback(player->timedplayback_userdata, &tevent);
+			}
+
         }
 
 		if (event->type == MIDI_SET_TEMPO) {
@@ -1380,6 +1429,18 @@ new_fluid_player(fluid_synth_t *synth)
 
     return player;
 }
+
+/**
+* Returns the synth from the player
+* @param player MIDI player instance
+* @return Synth
+*/
+fluid_synth_t* 
+fluid_player_get_synth(fluid_player_t* player)
+{
+	return player->synth;
+}
+
 
 /**
  * Delete a MIDI player instance.
@@ -1509,6 +1570,15 @@ fluid_player_set_playback_callback(fluid_player_t* player,
     player->playback_callback = handler;
     player->playback_userdata = handler_data;
     return FLUID_OK;
+}
+
+int 
+fluid_player_set_timed_playback_callback(fluid_player_t* player,
+	handle_midi_timed_event_func_t handler, void* handler_data)
+{
+	player->timedplayback_callback = handler;
+	player->timedplayback_userdata = handler_data;
+	return FLUID_OK;
 }
 
 /**
