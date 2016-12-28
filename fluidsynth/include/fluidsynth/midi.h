@@ -278,6 +278,8 @@ typedef enum
  */
 typedef int (*handle_onload_func_t)(void* data, fluid_player_t* player);
 
+typedef int(*handle_tick_func_t)(void* data, fluid_player_t* player, unsigned int ticks);
+
 typedef int (*handle_midi_event_func_t)(void* data, fluid_midi_event_t* event);
 
 typedef int(*handle_midi_timed_event_func_t)(void* data, fluid_midi_timed_event_t* event);
@@ -338,6 +340,7 @@ FLUIDSYNTH_API fluid_track_t* fluid_player_get_track(fluid_player_t* player, int
 FLUIDSYNTH_API int fluid_player_set_playback_callback(fluid_player_t* player, handle_midi_event_func_t handler, void* handler_data);
 FLUIDSYNTH_API int fluid_player_set_timed_playback_callback(fluid_player_t* player, handle_midi_timed_event_func_t handler, void* handler_data);
 FLUIDSYNTH_API int fluid_player_set_onload_callback(fluid_player_t* player, handle_onload_func_t handler, void* handler_data);
+FLUIDSYNTH_API int fluid_player_set_tick_callback(fluid_player_t* player, int tick_interval, handle_tick_func_t handler, void* handler_data);
 FLUIDSYNTH_API fluid_synth_t* fluid_player_get_synth(fluid_player_t* player);
 
 #ifdef __cplusplus

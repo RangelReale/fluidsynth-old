@@ -1419,9 +1419,15 @@ new_fluid_player(fluid_synth_t *synth)
     player->cur_msec = 0;
     player->cur_ticks = 0;
     fluid_player_set_playback_callback(player, fluid_synth_handle_midi_event, synth);
-    player->onload_callback = NULL;
+	player->timedplayback_callback = NULL;
+	player->timedplayback_userdata = NULL;
+	player->onload_callback = NULL;
     player->onload_userdata = NULL;
-    player->use_system_timer = fluid_settings_str_equal(synth->settings,
+	player->tick_interval = 1;
+	player->tick_interval_last = 0;
+	player->tick_callback = NULL;
+	player->tick_userdata = NULL;
+	player->use_system_timer = fluid_settings_str_equal(synth->settings,
             "player.timing-source", "system");
 
     fluid_settings_getint(synth->settings, "player.reset-synth", &i);
@@ -1603,6 +1609,16 @@ fluid_player_set_onload_callback(fluid_player_t* player,
     return FLUID_OK;
 }
 
+int
+fluid_player_set_tick_callback(fluid_player_t* player, int tick_interval,
+	handle_tick_func_t handler, void* handler_data)
+{
+	player->tick_interval = tick_interval;
+	player->tick_callback = handler;
+	player->tick_userdata = handler_data;
+	return FLUID_OK;
+}
+
 /**
  * Add a MIDI file to a player queue.
  * @param player MIDI player instance
@@ -1775,6 +1791,7 @@ fluid_player_playlist_load(fluid_player_t *player, unsigned int msec)
     player->start_msec = msec;
     player->start_ticks = 0;
     player->cur_ticks = 0;
+	player->tick_interval_last = 0;
 
     if (player->reset_synth_between_songs) {
         fluid_synth_system_reset(player->synth);
@@ -1816,6 +1833,13 @@ fluid_player_callback(void *data, unsigned int msec)
         player->cur_ticks = (player->start_ticks
                 + (int) ((double) (player->cur_msec - player->start_msec)
                         / player->deltatime));
+
+		if (player->tick_callback != NULL) {
+			if (player->cur_ticks - player->tick_interval_last >= player->tick_interval) {
+				player->tick_callback(player->tick_userdata, player, player->cur_ticks);
+				player->tick_interval_last = player->cur_ticks;
+			}
+		}
 
         for (i = 0; i < player->ntracks; i++) {
             if (!fluid_track_eot(player->track[i])) {
