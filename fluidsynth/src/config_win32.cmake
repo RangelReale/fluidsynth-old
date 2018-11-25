@@ -5,10 +5,10 @@
 #define DSOUND_SUPPORT 1
 #define WINMIDI_SUPPORT 1
 
-#define snprintf _snprintf
 #define strcasecmp _stricmp
 
 #if _MSC_VER < 1500
+#define snprintf _snprintf
 #define vsnprintf _vsnprintf
 #endif
 
